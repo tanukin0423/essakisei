@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>長所・短所のエントリーシート作成</title>
+    <style>
+        /* 既存のスタイルをそのまま維持 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        header {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        main {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .output-container {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .output-container h2 {
+            color: #333;
+        }
+
+        .prompt-container {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .copy-button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .copy-button:hover {
+            background-color: #218838;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-group select, .input-group input {
+            flex: 1;
+        }
+        .highlight-option {
+            font-weight: bold;
+            color: #007BFF;
+            background-color: #f0f8ff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>長所・短所のエントリーシート作成</h1>
+    </header>
+    <main>
+        <form id="strengthWeaknessForm">
+            <div class="form-group">
+                <label for="strengthSelect">長所 (強み):</label>
+                <div class="input-group">
+                    <select id="strengthSelect" onchange="updateStrengthInput()">
+                        <option value="">-- 選択してください --</option>
+                        <option value="計画性">計画性が高い</option>
+                        <option value="協調性">協調性がある</option>
+                        <option value="柔軟性">柔軟性がある</option>
+                        <option value="責任感">責任感が強い</option>
+                        <option value="創造性">創造性がある</option>
+                        <option value="コミュニケーション力">コミュニケーション力がある</option>
+                        <option value="リーダーシップ">リーダーシップがある</option>
+                        <option value="粘り強さ">粘り強さがある</option>
+                        <option value="分析力">分析力がある</option>
+                        <option value="学習意欲">学習意欲が高い</option>
+                        <option value="other" class="highlight-option">その他（自由入力）</option>
+                    </select>
+                    <input type="text" id="strengthInput" placeholder="長所を入力してください" style="display: none;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="strengthDescription">長所の具体的な説明:</label>
+                <textarea id="strengthDescription" placeholder="長所の具体的な説明を入力してください"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="weaknessSelect">短所 (改善点):</label>
+                <div class="input-group">
+                    <select id="weaknessSelect" onchange="updateWeaknessInput()">
+                        <option value="">-- 選択してください --</option>
+                        <option value="慎重すぎる">慎重すぎる</option>
+                        <option value="完璧主義">完璧主義</option>
+                        <option value="自己主張が弱い">自己主張が弱い</option>
+                        <option value="優柔不断">優柔不断</option>
+                        <option value="せっかち">せっかち</option>
+                        <option value="詳細への注意不足">詳細への注意不足</option>
+                        <option value="人見知り">人見知り</option>
+                        <option value="時間管理が苦手">時間管理が苦手</option>
+                        <option value="批判に敏感">批判に敏感</option>
+                        <option value="マルチタスクが苦手">マルチタスクが苦手</option>
+                        <option value="other" class="highlight-option">その他（自由入力）</option>
+                    </select>
+                    <input type="text" id="weaknessInput" placeholder="短所を入力してください" style="display: none;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="weaknessDescription">改善点の具体的な説明と取り組み:</label>
+                <textarea id="weaknessDescription" placeholder="改善点の具体的な説明と取り組みを入力してください"></textarea>
+            </div>
+            <button type="button" onclick="generateEntrySheet()">エントリーシートを作成</button>
+        </form>
+
+        <div class="output-container">
+            <h2>作成されたエントリーシート</h2>
+            <p id="outputText"></p>
+        </div>
+
+        <div class="prompt-container" id="promptContainer">
+            <h2>AIへの添削依頼プロンプト</h2>
+            <p id="aiPrompt"></p>
+            <button class="copy-button" onclick="copyPrompt()">プロンプトをコピー</button>
+        </div>
+    </main>
+
+    <script>
+       const strengthDescriptions = {
+    "計画性": "目標に向かって着実に行動できます。例えば、大学のグループプロジェクトでは、タスクを細分化し、メンバーごとの役割と締め切りを明確にしたガントチャートを作成しました。その結果、チームの進捗が常に把握でき、最終的に高評価を得ることができました。",
+    "協調性": "チームワークを大切にし、他者の意見を尊重しながら協力して目標達成に取り組むことができます。学園祭の実行委員会では、意見の対立があった際に、双方の立場を理解し、折衷案を提案することで、スムーズな運営に貢献しました。",
+    "柔軟性": "新しい環境や予期せぬ状況にも適応しやすく、臨機応変に対応できます。留学時、言語や文化の壁に直面しましたが、現地の友人に積極的に助けを求め、オンライン学習ツールを活用することで、3ヶ月で日常会話レベルまで上達しました。",
+    "責任感": "与えられた仕事を最後まで確実にやり遂げる強い意志を持っています。アルバイト先のカフェでは、突然のスタッフ欠勤時も、自ら残業を申し出て店舗運営をサポートし、店長から信頼を得ることができました。",
+    "創造性": "新しいアイデアを生み出し、独創的な解決策を提案することができます。大学のビジネスコンテストでは、地域の特産品を活用した新商品のアイデアを提案し、優秀賞を受賞しました。この経験から、市場調査と創造的思考の重要性を学びました。",
+    "コミュニケーション力": "相手の立場を理解しながら、自分の考えを明確に伝えることができます。ディベート大会では、複雑な社会問題について、データや具体例を用いて論理的に主張を展開し、審査員や観客から高い評価を得ました。",
+    "リーダーシップ": "チームをまとめ、メンバーの長所を引き出しながらプロジェクトを推進できます。サークル活動では、部員の得意分野を活かした役割分担を行い、全員が主体的に参加できる環境を作ることで、過去最高の成果を上げることができました。",
+    "粘り強さ": "困難な状況でも諦めずに取り組み続け、目標達成まで粘り強く努力できます。資格試験の勉強では、初回不合格後も挫けず、学習方法を見直し、毎日2時間の学習時間を確保することで、2回目の挑戦で合格を果たしました。",
+    "分析力": "複雑な情報を整理し、論理的に分析して適切な結論を導き出すことができます。ゼミの研究では、大量のデータから重要な傾向を見出し、視覚化ツールを使って分かりやすくプレゼンテーションすることで、教授から高い評価を得ました。",
+    "学習意欲": "常に新しい知識やスキルを吸収しようとする姿勢があり、自己成長に積極的です。興味のある分野の最新技術について、オンライン講座やセミナーに定期的に参加し、そこで得た知識を自主プロジェクトに活用しています。"
+};
+
+const weaknessDescriptions = {
+    "慎重すぎる": "決断が遅れることがありますが、重要な判断の際には多角的な視点で検討するよう心がけています。例えば、進路選択の際には、自分の適性と各業界の将来性を表にまとめ、先輩や教授にも相談することで、より客観的な判断ができるようになりました。今では、重要度に応じて判断のプロセスを変え、効率的に決定できるよう努めています。",
+    "完璧主義": "細部にこだわりすぎて作業効率が落ちることがありますが、優先順位をつけて取り組むよう努めています。レポート作成時には、重要度の高い部分から集中的に取り組み、時間配分を明確にすることで、締め切りを守りつつ質の高い成果を出せるようになりました。また、「完璧」の基準を柔軟に設定し、状況に応じて調整する練習をしています。",
+    "自己主張が弱い": "意見を述べるのが苦手ですが、自信を持って自分の考えを表現できるよう練習しています。ゼミでは、発言前に要点をメモする習慣をつけ、毎回最低1回は発言することを自分に課しています。また、ディベートクラブに参加し、論理的に意見を組み立てる訓練を重ねています。これらの取り組みにより、徐々に自分の意見を適切に主張できるようになってきました。",
+    "優柔不断": "決断を下すのに時間がかかることがありますが、判断基準を明確にして改善に努めています。日常生活では、小さな決定に対して「2分ルール」を設け、2分以内に決断するよう心がけています。重要な決定には「決定マトリックス」を作成し、各選択肢のメリット・デメリットを可視化することで、より迅速かつ合理的な判断ができるようになりました。",
+    "せっかち": "急ぎすぎて見落としをすることがありますが、一度立ち止まって確認する習慣をつけています。例えば、メール送信前に必ず1分間の見直し時間を設け、内容の正確さと適切さを確認しています。また、重要なタスクでは「ポモドーロ・テクニック」を活用し、25分の集中作業と5分の休憩を繰り返すことで、焦りを抑えつつ効率的に作業を進められるようになりました。",
+    "詳細への注意不足": "大きな方針に集中するあまり細かい点を見逃すことがありますが、チェックリストを活用して改善しています。プロジェクト管理では、タスクごとに詳細なチェックリストを作成し、完了時に必ず確認するプロセスを導入しました。また、重要な文書は第三者に確認を依頼し、多角的な視点で見直すことで、見落としを最小限に抑えるよう心がけています。",
+    "人見知り": "初対面の人とのコミュニケーションに時間がかかりますが、積極的に自己紹介する機会を作るよう努めています。大学のイベントやセミナーでは、毎回3人以上の新しい人と会話することを目標に設定し、実践しています。また、アイスブレイクの技法を学び、相手が話しやすい質問を準備することで、徐々にスムーズなコミュニケーションが取れるようになってきました。",
+    "時間管理が苦手": "締め切りに追われることがありますが、タスク管理ツールを活用して計画的に取り組むよう心がけています。具体的には、Trelloを使ってプロジェクトごとにタスクを可視化し、優先度に応じて色分けしています。また、Google Calendarを活用して、タスクごとに作業時間を割り当て、リマインダーを設定しています。これにより、計画的に作業を進め、余裕を持って締め切りを守れるようになりました。",
+    "批判に敏感": "否定的なフィードバックを受けると落ち込みやすいですが、建設的な意見として受け止める練習をしています。フィードバックを受けた際は、すぐに反応せず、一度深呼吸をして冷静になることを心がけています。その後、フィードバックの具体的な内容を整理し、改善点を明確にするよう努めています。また、定期的に自己評価を行い、他者からのフィードバックと照らし合わせることで、より客観的に自己を見つめる習慣をつけています。",
+    "マルチタスクが苦手": "複数の作業を同時に行うのが苦手ですが、タスクの優先順位付けと時間配分の工夫で対応しています。1日の始まりに「重要度×緊急度マトリックス」を使ってタスクを整理し、集中して取り組むべき作業と並行して進められる作業を明確にしています。また、類似したタスクをグループ化し、一定の時間帯にまとめて処理することで、コンテキストスイッチングの回数を減らし、効率的に作業を進められるようになりました。"
+};
+
+        function updateStrengthInput() {
+            const select = document.getElementById("strengthSelect");
+            const input = document.getElementById("strengthInput");
+            const description = document.getElementById("strengthDescription");
+
+            if (select.value === "other") {
+                input.style.display = "block";
+                input.value = "";
+                description.value = "";
+            } else {
+                input.style.display = "none";
+                input.value = select.value;
+                description.value = strengthDescriptions[select.value] || "";
+            }
+        }
+
+        function updateWeaknessInput() {
+            const select = document.getElementById("weaknessSelect");
+            const input = document.getElementById("weaknessInput");
+            const description = document.getElementById("weaknessDescription");
+
+            if (select.value === "other") {
+                input.style.display = "block";
+                input.value = "";
+                description.value = "";
+            } else {
+                input.style.display = "none";
+                input.value = select.value;
+                description.value = weaknessDescriptions[select.value] || "";
+            }
+        }
+
+        function generateEntrySheet() {
+            const strengthSelect = document.getElementById("strengthSelect");
+            const strengthInput = document.getElementById("strengthInput");
+            const weaknessSelect = document.getElementById("weaknessSelect");
+            const weaknessInput = document.getElementById("weaknessInput");
+
+            const strength = strengthSelect.value === "other" ? strengthInput.value : strengthSelect.value;
+            const weakness = weaknessSelect.value === "other" ? weaknessInput.value : weaknessSelect.value;
+
+            const strengthDescription = document.getElementById("strengthDescription").value;
+            const weaknessDescription = document.getElementById("weaknessDescription").value;
+
+            const entrySheet = `私の長所は、${strength}です。${strengthDescription}\n\n一方で、成長の機会として、${weakness}があります。${weaknessDescription}`;
+            document.getElementById("outputText").innerText = entrySheet;
+
+            const aiPrompt = `以下のエントリーシートの内容を添削してください。\n\n長所: ${strength}\n${strengthDescription}\n\n改善点: ${weakness}\n${weaknessDescription}\n\n長所がより効果的に伝わる表現や、改善点に対する具体的な取り組みについてのアドバイスを提供してください。`;
+            document.getElementById("aiPrompt").innerText = aiPrompt;
+        }
+
+        function copyPrompt() {
+            const aiPromptText = document.getElementById("aiPrompt").innerText;
+            navigator.clipboard.writeText(aiPromptText).then(() => {
+                alert("プロンプトがコピーされました。");
+            }).catch(err => {
+                console.error('コピーに失敗しました:', err);
+            });
+        }
+    </script>
+</body>
+</html>

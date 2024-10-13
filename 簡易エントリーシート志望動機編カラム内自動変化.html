@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>志望動機作成サイト（六段論法）</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        input, textarea, select {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 1em;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .output-container {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .output-container h2 {
+            color: #333;
+        }
+
+        #aiPromptModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        #aiPromptText {
+            width: 100%;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>志望動機作成フォーム（六段論法）</h1>
+    </header>
+    <main>
+        <form id="selfPrForm">
+            <label for="conclusion">1. 結論 (志望理由の核心):</label>
+            <select id="conclusionSelect">
+                <option value="">-- 選択してください --</option>
+                <option value="貴社の先進的技術開発と社会貢献の姿勢に共感し、私の技術力と創造性を活かして革新的ソリューションの創出に貢献したいと考えています。">貴社の先進的技術開発と社会貢献の姿勢に共感し、私の技術力と創造性を活かして革新的ソリューションの創出に貢献したいと考えています。</option>
+                <option value="貴社の「顧客第一」の理念に惹かれ、私のコミュニケーション能力を活かして顧客満足度の向上に尽力したいと考えています。">貴社の「顧客第一」の理念に惹かれ、私のコミュニケーション能力を活かして顧客満足度の向上に尽力したいと考えています。</option>
+                <option value="貴社のグローバル展開と多様性重視の文化に魅力を感じ、私の語学力と異文化理解力を活かして国際的なビジネス発展に貢献したいと考えています。">貴社のグローバル展開と多様性重視の文化に魅力を感じ、私の語学力と異文化理解力を活かして国際的なビジネス発展に貢献したいと考えています。</option>
+            </select>
+            <textarea id="conclusion" placeholder="例: 貴社の長い歴史と「誇りを持って仕事をする」という理念に感銘を受け、この理念を体現し、真の価値を提供する一員として貢献したいと強く志望しました。"></textarea>
+        
+            <label for="background">2. 背景 (志望にいたった経緯):</label>
+            <select id="backgroundSelect"></select>
+            <textarea id="background" placeholder="例: 大学の地域活性化活動を通じて、持続可能な社会基盤の重要性を実感しました。貴社の「100年先を見据えたものづくり」に共感し、この理念のもと社会インフラの発展に貢献したいと考えています。"></textarea>
+        
+            <label for="challenge">3. 企業理解 （企業の特徴や魅力）:</label>
+            <select id="challengeSelect"></select>
+            <textarea id="challenge" placeholder="例: 貴社の「常に顧客視点で考え、行動する」という理念に共感します。顧客の声を製品開発に反映させるシステムは、真の顧客中心主義を体現していると感じました。この理念を指針とし、顧客満足度向上に貢献したいです。"></textarea>
+        
+            <label for="action">4. 自己分析 (自身の強みや適性):</label>
+            <select id="actionSelect"></select>
+            <textarea id="action" placeholder="例: 私の強みは、高いコミュニケーション能力と粘り強さです。インターンシップでは、困難な商談でも諦めず、顧客ニーズを理解し適切な提案で成果を上げました。この経験を活かし、貴社で顧客との信頼関係構築と事業成長に貢献したいです。"></textarea>
+    
+            <label for="result">5. ビジョン (入社後の目標や貢献):</label>
+            <select id="resultSelect"></select>
+            <textarea id="result" placeholder="例: 入社後3年で営業のトップを目指し、5年後には新規顧客開拓チームリーダーとして市場シェア拡大に貢献します。長期的には、革新的な営業手法を開発・実践し、貴社の持続的成長に寄与したいです。"></textarea>
+    
+            <label for="learning">6. 熱意 (なぜこの企業でなければならないか):</label>
+            <select id="learningSelect"></select>
+            <textarea id="learning" placeholder="例: 貴社の「100年先を見据えた街づくり」理念に共感し、この壮大なビジョン実現に携わりたいです。特に環境配慮型都市開発は、私の追求してきた持続可能社会の実現と直結しています。長期的視野に立った社会基盤創造に参画し、次世代に誇れる街づくりに貢献することが私の最大の目標です。"></textarea>
+    
+            <button type="button" id="generateBtn">志望動機を作成</button>
+        </form>
+    
+        <div id="output" class="output-container"></div>
+        <div id="aiPromptModal" class="modal">
+            <div class="modal-content">
+                <h2>AIに添削依頼するプロンプト</h2>
+                <textarea id="aiPromptText"></textarea>
+                <button id="copyPromptBtn">プロンプトをコピー</button>
+                <button id="closeModalBtn">閉じる</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('selfPrForm');
+        const output = document.getElementById('output');
+        const generateBtn = document.getElementById('generateBtn');
+
+        const options = {
+            conclusion: [
+                "貴社の先進的技術開発と社会貢献の姿勢に共感し、私の技術力と創造性を活かして革新的ソリューションの創出に貢献したいと考えています。",
+                "貴社の「顧客第一」の理念に惹かれ、私のコミュニケーション能力を活かして顧客満足度の向上に尽力したいと考えています。",
+                "貴社のグローバル展開と多様性重視の文化に魅力を感じ、私の語学力と異文化理解力を活かして国際的なビジネス発展に貢献したいと考えています。"
+            ],
+            background: [
+                "大学での研究を通じて貴社の先端技術開発に関心を持ち、特にAIとIoTを融合したスマートホームソリューションに感銘を受けました。この革新的分野で自身の能力を発揮したいと考えています。",
+                "貴社でのインターンシップで、社員の方々の高い専門性と情熱に感銘を受けました。この経験から、貴社で長期的にキャリアを築きたいという強い思いが芽生えました。",
+                "貴社製品の品質と革新性、特に環境に配慮した製品ラインに感銘を受けました。環境保護と技術革新を両立する貴社の取り組みに携わりたいと考えています。"
+            ],
+            challenge: [
+                "貴社の環境保護への先駆的取り組みに共感します。再生可能エネルギーの活用や廃棄物削減技術は、持続可能な社会実現に大きく貢献していると考えます。環境と経済の両立を目指す貴社のプロジェクトに参加したいです。",
+                "貴社の充実した社員教育制度とキャリア開発支援に魅力を感じます。特に、若手社員への海外研修機会や部署異動の柔軟性は、継続的な成長を促進すると考えます。この環境で長期的にキャリアを築きたいです。",
+                "貴社の「ダイバーシティ＆インクルージョン」重視の文化に共感します。多様な人材が活躍できる環境は、イノベーションと持続的成長に不可欠です。この文化の中で、自身の視点を活かしつつ、創造的なソリューションを生み出したいです。"
+            ],
+            action: [
+                "私の強みは、データ分析力と論理的思考能力です。これらのスキルは、貴社のマーケティング戦略立案や顧客ニーズ分析に活用できると確信しています。複雑な問題を体系的に解決する能力で、革新的プロジェクトに貢献したいです。",
+                "私の強みは、高いコミュニケーション能力とチームワークスキルです。多様な背景を持つ人々と効果的に協働する能力を磨きました。貴社のクロスファンクショナルな環境で、円滑なコミュニケーションを促進し、プロジェクトの成功に貢献したいです。",
+                "私の強みは、新技術への高い適応力と自己学習能力です。常に最新技術をキャッチアップし、短期間で新しいスキルを習得してきました。貴社の革新的プロジェクトで、迅速に適応し創造的なソリューションを提案したいです。"
+            ],
+            result: [
+                "入社後は技術開発部門で最先端スキルを習得し、5年内に主要プロジェクトのリーダーを目指します。10年後には、業界をリードする技術者として、社会に変革をもたらす新技術の創出に貢献したいです。",
+                "入社3年以内に新規事業提案を行い、5年以内にその事業を新たな収益の柱として確立することを目指します。長期的には、事業多角化戦略のキープレイヤーとなり、企業価値向上に貢献したいです。",
+                "入社後は語学力向上に努め、3年以内に海外拠点での勤務を目指します。10年後にはグローバルリーダーとして、国際的プロジェクトを主導し、貴社の世界展開推進に貢献したいです。"
+            ],
+            learning: [
+                "貴社の「技術で社会貢献」という理念は私のビジョンと合致します。特に持続可能エネルギー技術開発は私の追求テーマであり、貴社と共に革新を起こし、より良い未来創造に貢献したいです。技術と社会貢献の融合は貴社でしか実現できません。",
+                "貴社のAI技術と医療分野への応用は、私の研究テーマと直結しています。この分野で貴社と共に画期的なソリューションを生み出したいという強い願望があります。最先端技術と社会的インパクトの両立は貴社でしか挑戦できません。",
+                "貴社の「100年企業」としての歴史と革新への挑戦姿勢に深く感銘を受けています。伝統と革新のバランスを保ちグローバルリーダーシップを発揮する貴社で、次の100年を築く一員となりたいです。この唯一無二の企業文化で自身の可能性を最大限に引き出したいと考えています。"
+            ]
+        };
+
+        // Populate dropdowns
+        Object.keys(options).forEach((key) => {
+            const select = document.getElementById(`${key}Select`);
+            select.innerHTML = '<option value="">-- 選択してください --</option>';
+            options[key].forEach((option, i) => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option.substring(0, 50) + '...';
+                select.appendChild(optionElement);
+            });
+        });
+
+        // Function to update all fields based on the selected conclusion
+        function updateAllFields(selectedIndex) {
+            Object.keys(options).forEach((key) => {
+                const select = document.getElementById(`${key}Select`);
+                const textarea = document.getElementById(key);
+                if (selectedIndex !== -1) {
+                    select.selectedIndex = selectedIndex + 1;
+                    textarea.value = options[key][selectedIndex];
+                } else {
+                    select.selectedIndex = 0;
+                    textarea.value = '';
+                }
+            });
+        }
+
+        // Add event listener to conclusion dropdown
+        const conclusionSelect = document.getElementById('conclusionSelect');
+        conclusionSelect.addEventListener('change', (e) => {
+            const selectedIndex = conclusionSelect.selectedIndex - 1;
+            updateAllFields(selectedIndex);
+        });
+
+        generateBtn.addEventListener('click', generateMotivation);
+
+        function generateMotivation() {
+            const fields = ['conclusion', 'background', 'challenge', 'action', 'result', 'learning'];
+            const motivation = fields.reduce((acc, field) => {
+                const value = document.getElementById(field).value;
+                return acc + `【${field}】\n${value}\n\n`;
+            }, '');
+
+            output.innerHTML = `
+                <h2>作成された志望動機</h2>
+                <pre>${escapeHTML(motivation)}</pre>
+                <button id="downloadBtn">ダウンロード</button>
+                <button id="aiPromptBtn">AIに添削依頼するプロンプトを作成</button>
+            `;
+
+            document.getElementById('downloadBtn').addEventListener('click', () => downloadText(motivation));
+            document.getElementById('aiPromptBtn').addEventListener('click', () => generateAIReviewPrompt(motivation));
+        }
+
+        function downloadText(text) {
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'motivation.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+ 
+        function generateAIReviewPrompt(motivationText) {
+            const aiPrompt = `以下は、志望動機の下書きです。この志望動機を以下の観点から添削し、改善案を提示してください：
+
+1. 一貫性：志望理由が一貫して表現され、各段落が論理的につながっているか
+2. 具体性：経験や目標が具体的な事例や数字を用いて説明されているか
+3. 独自性：他の応募者と差別化できる要素が含まれているか
+4. 簡潔さ：冗長な表現や不必要な情報がないか
+5. インパクト：読み手の印象に残る内容になっているか
+6. 企業適合性：志望企業の理念や事業内容に関連する要素が適切に盛り込まれているか
+
+改善案を提示する際は、具体的な修正例を含めてください。また、志望動機の長所も指摘し、それをさらに強化する方法があれば提案してください。
+
+最後に、添削後の内容を400字程度にまとめて提示してください。このまとめは、面接官に強い印象を与え、詳しく聞きたいと思わせる内容になるようにしてください。
+
+志望動機：
+
+${motivationText}`;
+
+            const modal = document.getElementById('aiPromptModal');
+            const promptText = document.getElementById('aiPromptText');
+            const copyBtn = document.getElementById('copyPromptBtn');
+            const closeBtn = document.getElementById('closeModalBtn');
+
+            promptText.value = aiPrompt;
+            modal.style.display = "block";
+
+            copyBtn.onclick = () => {
+                promptText.select();
+                document.execCommand('copy');
+                alert('プロンプトをクリップボードにコピーしました。');
+            };
+
+            closeBtn.onclick = () => {
+                modal.style.display = "none";
+            };
+
+            window.onclick = (event) => {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            };
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>"']/g, (match) => {
+                const escape = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                };
+                return escape[match];
+            });
+        }
+    });
+    </script>
+</body>
+</html>

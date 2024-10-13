@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自己PR作成フォーム（六段論法）</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        input, textarea, select {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 1em;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .output-container {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .output-container h2 {
+            color: #333;
+        }
+
+        #aiPromptModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        #aiPromptText {
+            width: 100%;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>自己PR作成フォーム（六段論法）</h1>
+    </header>
+    <main>
+        <form id="selfPrForm">
+            <label for="conclusion">1. 結論 (自分の強み):</label>
+            <select id="conclusionSelect">
+                <option value="">-- 選択してください --</option>
+                <option value="私の最大の強みは、困難な状況下でも冷静に分析し、創造的な解決策を見出す問題解決能力です。">私の最大の強みは、困難な状況下でも冷静に分析し、創造的な解決策を見出す問題解決能力です。</option>
+                <option value="私の核となる強みは、多様な意見を尊重し、チームの潜在能力を最大限に引き出すリーダーシップです。">私の核となる強みは、多様な意見を尊重し、チームの潜在能力を最大限に引き出すリーダーシップです。</option>
+                <option value="私の際立つ強みは、新しい環境や状況に迅速に適応し、常に成長を続ける柔軟性です。">私の際立つ強みは、新しい環境や状況に迅速に適応し、常に成長を続ける柔軟性です。</option>
+            </select>
+            <textarea id="conclusion" placeholder="例: 私の最大の強みは、困難な状況下でも冷静に分析し、創造的な解決策を見出す問題解決能力です。"></textarea>
+    
+            <label for="background">2. 背景 (その強みを発揮した状況):</label>
+            <select id="backgroundSelect"></select>
+            <textarea id="background" placeholder="例: 大学の研究プロジェクトで、予算削減により高性能機材の使用が困難となる事態に直面しました。"></textarea>
+    
+            <label for="challenge">3. 課題 (直面した具体的な問題):</label>
+            <select id="challengeSelect"></select>
+            <textarea id="challenge" placeholder="例: 研究の質を落とすことなく、限られた予算内で代替手段を見出し、プロジェクトを遂行する必要がありました。"></textarea>
+    
+            <label for="action">4. 行動 (どのように問題に対処したか):</label>
+            <select id="actionSelect"></select>
+            <textarea id="action" placeholder="例: 地元企業と交渉し、使用済み機材の無償提供を受けると同時に、オープンソースの解析ソフトウェアを活用して、高コストの機材に依存しない独自の研究手法を開発しました。"></textarea>
+    
+            <label for="result">5. 結果 (どのような成果が得られたか):</label>
+            <select id="resultSelect"></select>
+            <textarea id="result" placeholder="例: 予算の20%削減にもかかわらず、当初の研究目標を100%達成。さらに、開発した手法が注目を集め、学会で最優秀発表賞を受賞しました。"></textarea>
+    
+            <label for="learning">6. 学び (この経験から得た教訓や成長):</label>
+            <select id="learningSelect"></select>
+            <textarea id="learning" placeholder="例: 制約は創造性を刺激する機会であり、柔軟な思考と行動力が革新的な解決策を生み出すことを学びました。この経験は、どんな困難も乗り越えられるという自信につながっています。"></textarea>
+    
+            <button type="button" id="generateBtn">自己PRを作成</button>
+        </form>
+    
+        <div id="output" class="output-container"></div>
+        <div id="aiPromptModal" class="modal">
+            <div class="modal-content">
+                <h2>AIに添削依頼するプロンプト</h2>
+                <textarea id="aiPromptText"></textarea>
+                <button id="copyPromptBtn">プロンプトをコピー</button>
+                <button id="closeModalBtn">閉じる</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('selfPrForm');
+        const output = document.getElementById('output');
+        const generateBtn = document.getElementById('generateBtn');
+
+        const options = {
+            conclusion: [
+                "私の最大の強みは、困難な状況下でも冷静に分析し、創造的な解決策を見出す問題解決能力です。",
+                "私の核となる強みは、多様な意見を尊重し、チームの潜在能力を最大限に引き出すリーダーシップです。",
+                "私の際立つ強みは、新しい環境や状況に迅速に適応し、常に成長を続ける柔軟性です。"
+            ],
+            background: [
+                "大学の研究プロジェクトで、予算削減により高性能機材の使用が困難となる事態に直面しました。",
+                "学生団体の代表として、メンバー間の意見対立により活動が停滞するという危機的状況に遭遇しました。",
+                "1年間の海外留学中、言語や文化の壁に直面し、学業と日常生活の両立に苦心しました。"
+            ],
+            challenge: [
+                "研究の質を落とすことなく、限られた予算内で代替手段を見出し、プロジェクトを遂行する必要がありました。",
+                "多様な意見を尊重しつつ、団体の方向性を一致させ、活動を再活性化する必要がありました。",
+                "言語の壁を克服し、異文化環境に適応しながら、高い学業成績を維持する必要がありました。"
+            ],
+            action: [
+                "地元企業と交渉し、使用済み機材の無償提供を受けると同時に、オープンソースの解析ソフトウェアを活用して、高コストの機材に依存しない独自の研究手法を開発しました。",
+                "全メンバーと個別面談を実施し、意見を丁寧に聴取。その上で、各自の強みを活かせる役割分担を再構築し、共通の目標設定ワークショップを開催して団結力を高めました。",
+                "現地学生とのタンデム学習を開始し、日常会話の練習を重ねました。同時に、図書館で毎日3時間の自主学習時間を設け、語学と専門知識の習得に励みました。"
+            ],
+            result: [
+                "予算の20%削減にもかかわらず、当初の研究目標を100%達成。さらに、開発した手法が注目を集め、学会で最優秀発表賞を受賞しました。",
+                "3ヶ月で団体の活動が正常化し、年間目標の150%を達成。さらに、メンバーの満足度調査で95%の高評価を獲得しました。",
+                "半年で現地の上級語学検定に合格し、学業でも専攻分野で上位10%の成績を維持。帰国後、留学体験を基に国際交流プログラムを立ち上げました。"
+            ],
+            learning: [
+                "制約は創造性を刺激する機会であり、柔軟な思考と行動力が革新的な解決策を生み出すことを学びました。この経験は、どんな困難も乗り越えられるという自信につながっています。",
+                "多様性を尊重し、個々の強みを活かすリーダーシップが、組織の潜在能力を最大限に引き出すことを実感しました。この経験は、今後のキャリアにおいても貴重な財産となっています。",
+                "困難を成長の機会と捉え、積極的に挑戦する姿勢が、予想を超える成果をもたらすことを学びました。この経験は、グローバル社会で活躍する自信と意欲を高めてくれました。"
+            ]
+        };
+
+        // Populate dropdowns
+        Object.keys(options).forEach((key) => {
+            const select = document.getElementById(`${key}Select`);
+            select.innerHTML = '<option value="">-- 選択してください --</option>';
+            options[key].forEach((option, i) => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option.substring(0, 50) + '...';
+                select.appendChild(optionElement);
+            });
+        });
+
+        // Function to update all fields based on the selected conclusion
+        function updateAllFields(selectedIndex) {
+            Object.keys(options).forEach((key) => {
+                const select = document.getElementById(`${key}Select`);
+                const textarea = document.getElementById(key);
+                if (selectedIndex !== -1) {
+                    select.selectedIndex = selectedIndex + 1;
+                    textarea.value = options[key][selectedIndex];
+                } else {
+                    select.selectedIndex = 0;
+                    textarea.value = '';
+                }
+            });
+        }
+
+        // Add event listener to conclusion dropdown
+        const conclusionSelect = document.getElementById('conclusionSelect');
+        conclusionSelect.addEventListener('change', (e) => {
+            const selectedIndex = conclusionSelect.selectedIndex - 1;
+            updateAllFields(selectedIndex);
+        });
+
+        generateBtn.addEventListener('click', generateSelfPR);
+
+        function generateSelfPR() {
+            const fields = ['conclusion', 'background', 'challenge', 'action', 'result', 'learning'];
+            const selfPR = fields.reduce((acc, field) => {
+                const value = document.getElementById(field).value;
+                return acc + `【${field}】\n${value}\n\n`;
+            }, '');
+
+            output.innerHTML = `
+                <h2>作成された自己PR</h2>
+                <pre>${escapeHTML(selfPR)}</pre>
+                <button id="downloadBtn">ダウンロード</button>
+                <button id="aiPromptBtn">AIに添削依頼するプロンプトを作成</button>
+            `;
+
+            document.getElementById('downloadBtn').addEventListener('click', () => downloadText(selfPR));
+            document.getElementById('aiPromptBtn').addEventListener('click', () => generateAIReviewPrompt(selfPR));
+        }
+
+        function downloadText(text) {
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'self_pr.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+ 
+        function generateAIReviewPrompt(selfPRText) {
+            const aiPrompt = `以下は、自己PRの下書きです。この自己PRを以下の観点から添削し、改善案を提示してください：
+
+1. 一貫性：強みが一貫して表現され、各段落が論理的につながっているか
+2. 具体性：経験や成果が具体的な事例や数字を用いて説明されているか
+3. 独自性：他の応募者と差別化できる要素が含まれているか
+4. 簡潔さ：冗長な表現や不必要な情報がないか
+5. インパクト：読み手の印象に残る内容になっているか
+6. 業界適合性：志望業界や職種に関連する要素が適切に盛り込まれているか
+
+改善案を提示する際は、具体的な修正例を含めてください。また、自己PRの長所も指摘し、それをさらに強化する方法があれば提案してください。
+
+最後に、添削後の内容を360字から400字程度にまとめて提示してください。このまとめは、面接官に強い印象を与え、詳しく聞きたいと思わせる内容になるようにしてください。
+
+自己PR：
+
+${selfPRText}`;
+
+            const modal = document.getElementById('aiPromptModal');
+            const promptText = document.getElementById('aiPromptText');
+            const copyBtn = document.getElementById('copyPromptBtn');
+            const closeBtn = document.getElementById('closeModalBtn');
+
+            promptText.value = aiPrompt;
+            modal.style.display = "block";
+
+            copyBtn.onclick = () => {
+                promptText.select();
+                document.execCommand('copy');
+                alert('プロンプトをクリップボードにコピーしました。');
+            };
+
+            closeBtn.onclick = () => {
+                modal.style.display = "none";
+            };
+
+            window.onclick = (event) => {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            };
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>"']/g, (match) => {
+                const escape = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                };
+                return escape[match];
+            });
+        }
+    });
+    </script>
+</body>
+</html>

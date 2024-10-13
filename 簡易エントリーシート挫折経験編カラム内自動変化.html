@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>挫折経験（六段論法）</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        input, textarea, select {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 1em;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 70px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .output-container {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .output-container h2 {
+            color: #333;
+        }
+        #aiPromptModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+        #aiPromptText {
+            width: 100%;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>挫折経験（六段論法）</h1>
+    </header>
+    <main>
+        <form id="setsubackForm">
+            <label for="situation">1. 状況 (どんな挫折だったか):</label>
+            <select id="situationSelect">
+                <option value="">-- 選択してください --</option>
+                <option value="大学3年次に挑戦した公認会計士試験で、予想外の不合格という結果に直面しました。">大学3年次に挑戦した公認会計士試験で、予想外の不合格という結果に直面しました。</option>
+                <option value="所属していた陸上部で、全国大会出場を目指していましたが、地区予選で敗退してしまいました。">所属していた陸上部で、全国大会出場を目指していましたが、地区予選で敗退してしまいました。</option>
+                <option value="起業を目指して立ち上げた学生ベンチャーが、半年で資金難に陥り、事業の継続が困難になりました。">起業を目指して立ち上げた学生ベンチャーが、半年で資金難に陥り、事業の継続が困難になりました。</option>
+            </select>
+            <textarea id="situation" placeholder="例: 大学3年次に挑戦した公認会計士試験で、予想外の不合格という結果に直面しました。"></textarea>
+
+            <label for="cause">2. 原因 (なぜ挫折したか):</label>
+            <select id="causeSelect"></select>              
+            <textarea id="cause" placeholder="例: 試験の難易度を甘く見積もり、十分な準備時間を確保できませんでした。また、効果的な学習方法を見出せず、効率的に知識を吸収できていませんでした。"></textarea>
+
+            <label for="emotion">3. 心情 (どう感じたか):</label>
+            <select id="emotionSelect"></select>                
+            <textarea id="emotion" placeholder="例: 自信を完全に失い、将来の夢が遠のいたように感じました。努力が報われなかった失望感と、周囲の期待に応えられなかった申し訳なさで落ち込みました。"></textarea>
+
+            <label for="action">4. 行動 (どう対処したか):</label>
+            <select id="actionSelect"></select>        
+            <textarea id="action" placeholder="例: 一週間ほど落ち込んだ後、心機一転して再挑戦を決意しました。過去の学習方法を見直し、効率的な勉強法を模索。また、経験者にアドバイスを求め、メンターを見つけて定期的に相談するようにしました。"></textarea>
+
+            <label for="result">5. 結果 (どうなったか):</label>
+            <select id="resultSelect"></select>                
+            <textarea id="result" placeholder="例: 効率的な学習法と継続的な努力の結果、1年後の再挑戦で見事合格を果たしました。試験勉強を通じて培った粘り強さと効率的な情報処理能力は、その後の学業や職場でも大いに役立っています。"></textarea>
+
+            <label for="learning">6. 学び (何を学んだか):</label>
+            <select id="learningSelect"></select>               
+            <textarea id="learning" placeholder="例: この経験から、目標達成には適切な計画と効率的な実行が不可欠であることを学びました。また、失敗は成長の機会であり、諦めずに挑戦し続けることの重要性を実感しました。さらに、周囲のサポートを受け入れ、自分の弱点を認識し改善することで、大きな困難も乗り越えられることを学びました。"></textarea>
+        </form>
+
+        <button type="button" id="generateBtn">テキストを作成</button>
+
+        <div id="output" class="output-container"></div>
+        <div id="aiPromptModal" class="modal">
+            <div class="modal-content">
+                <h2>AIに添削依頼するプロンプト</h2>
+                <textarea id="aiPromptText"></textarea>
+                <button id="copyPromptBtn">プロンプトをコピー</button>
+                <button id="closeModalBtn">閉じる</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('setsubackForm');
+    const output = document.getElementById('output');
+    const generateBtn = document.getElementById('generateBtn');
+
+    const options = {
+        situation: [
+            "大学3年次に挑戦した公認会計士試験で、予想外の不合格という結果に直面しました。",
+            "所属していた陸上部で、全国大会出場を目指していましたが、地区予選で敗退してしまいました。",
+            "起業を目指して立ち上げた学生ベンチャーが、半年で資金難に陥り、事業の継続が困難になりました。"
+        ],
+        cause: [
+            "試験の難易度を甘く見積もり、十分な準備時間を確保できませんでした。また、効果的な学習方法を見出せず、効率的に知識を吸収できていませんでした。",
+            "練習量は十分だと思っていましたが、質の高い練習ができていませんでした。また、プレッシャーに弱く、本番で実力を発揮できませんでした。",
+            "市場調査が不十分で、顧客ニーズを正確に把握できていませんでした。また、資金計画が甘く、予期せぬ出費に対応できませんでした。"
+        ],
+        emotion: [
+            "自信を完全に失い、将来の夢が遠のいたように感じました。努力が報われなかった失望感と、周囲の期待に応えられなかった申し訳なさで落ち込みました。",
+            "目標を達成できなかった悔しさと、チームメイトや指導者に申し訳ない気持ちで胸が痛みました。自分の実力不足を痛感し、競技を続ける意味を見失いそうになりました。",
+            "全てを失ったような喪失感に襲われ、自分の判断力と能力を疑いました。共に頑張ってきた仲間たちに対する罪悪感と、支援してくれた人々への申し訳なさで押しつぶされそうでした。"
+        ],
+        action: [
+            "一週間ほど落ち込んだ後、心機一転して再挑戦を決意しました。過去の学習方法を見直し、効率的な勉強法を模索。また、経験者にアドバイスを求め、メンターを見つけて定期的に相談するようにしました。",
+            "一度は競技をやめようと思いましたが、指導者との面談で初心を思い出しました。トレーニング方法を根本から見直し、メンタルトレーニングも取り入れ。チームメイトとの絆を深め、互いに高め合える関係を構築しました。",
+            "一時は全てを諦めかけましたが、支援者たちの励ましで立ち直りました。失敗の原因を徹底的に分析し、ビジネスモデルを再構築。また、経験豊富な起業家をアドバイザーとして迎え、財務管理と市場戦略を強化しました。"
+        ],
+        result: [
+            "効率的な学習法と継続的な努力の結果、1年後の再挑戦で見事合格を果たしました。試験勉強を通じて培った粘り強さと効率的な情報処理能力は、その後の学業や職場でも大いに役立っています。",
+            "新たなトレーニング方法と強くなったメンタルにより、翌年の大会で自己ベストを更新し、見事全国大会への切符を手に入れました。この経験で得た粘り強さと仲間との絆は、競技生活だけでなく、その後の人生においても大きな財産となっています。",
+            "再構築したビジネスモデルが功を奏し、1年後には黒字化を達成。3年後には、当初の目標を上回る売上を記録しました。この経験で得た危機管理能力と柔軟な思考力は、その後のキャリアにおいても大きな強みとなっています。"
+        ],
+        learning: [
+            "この経験から、目標達成には適切な計画と効率的な実行が不可欠であることを学びました。また、失敗は成長の機会であり、諦めずに挑戦し続けることの重要性を実感しました。さらに、周囲のサポートを受け入れ、自分の弱点を認識し改善することで、大きな困難も乗り越えられることを学びました。",
+            "この経験を通じて、真の強さは結果だけでなく、困難に立ち向かう過程にあることを学びました。また、チームワークの重要性と、自己を客観的に分析し改善する能力の大切さを実感しました。さらに、メンタル面の強化が、実力を最大限に発揮する上で不可欠であることを学びました。",
+            "この経験から、ビジネスにおいては綿密な市場調査と堅実な財務計画が不可欠であることを学びました。また、失敗を恐れずにチャレンジし、その経験から学び続けることの重要性を実感しました。さらに、周囲の支援者との信頼関係構築と、専門家の知見を積極的に取り入れることの大切さを学びました。"
+        ]
+    };
+
+    // Populate dropdowns
+    Object.keys(options).forEach((key) => {
+        const select = document.getElementById(`${key}Select`);
+        select.innerHTML = '<option value="">-- 選択してください --</option>';
+        options[key].forEach((option, i) => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option.substring(0, 50) + '...';
+            select.appendChild(optionElement);
+        });
+    });
+
+    // Function to update all fields based on the selected situation
+    function updateAllFields(selectedIndex) {
+        Object.keys(options).forEach((key) => {
+            const select = document.getElementById(`${key}Select`);
+            const textarea = document.getElementById(key);
+            if (selectedIndex !== -1) {
+                select.selectedIndex = selectedIndex + 1;
+                textarea.value = options[key][selectedIndex];
+            } else {
+                select.selectedIndex = 0;
+                textarea.value = '';
+            }
+        });
+    }
+
+    // Add event listener to situation dropdown
+    const situationSelect = document.getElementById('situationSelect');
+    situationSelect.addEventListener('change', (e) => {
+        const selectedIndex = situationSelect.selectedIndex - 1;
+        updateAllFields(selectedIndex);
+    });
+
+    generateBtn.addEventListener('click', generateEntrySheet);
+
+    function generateEntrySheet() {
+        const fields = ['situation', 'cause', 'emotion', 'action', 'result', 'learning'];
+        const entrySheet = fields.reduce((acc, field) => {
+            const value = document.getElementById(field).value;
+            return acc + `【${field}】\n${value}\n\n`;
+        }, '');
+
+        output.innerHTML = `
+            <h2>作成されたエントリシート</h2>
+            <pre>${escapeHTML(entrySheet)}</pre>
+            <button id="downloadBtn">ダウンロード</button>
+            <button id="aiPromptBtn">AIに添削依頼するプロンプトを作成</button>
+        `;
+
+        document.getElementById('downloadBtn').addEventListener('click', () => downloadText(entrySheet));
+        document.getElementById('aiPromptBtn').addEventListener('click', () => generateAIReviewPrompt(entrySheet));
+    }
+
+    function downloadText(text) {
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'setsuback_experience_entry_sheet.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function generateAIReviewPrompt(entrySheetText) {
+        const aiPrompt = `以下は、挫折経験について書かれたエントリーシートです。このエントリーシートを以下の観点から添削し、改善案を提示してください：
+1. 挫折の深刻さと克服の困難さが十分に伝わっているか
+2. 感情の描写が具体的で、読み手の共感を得られるか
+3. 克服のプロセスが論理的に説明されているか
+4. 学びや成長が明確に示されているか
+5. 文章全体の一貫性と流れはよいか
+6. 企業の求める人物像（例：粘り強さ、柔軟性、学習能力）がエピソードから伝わるか
+
+改善案を提示する際は、具体的な修正例を含めてください。また、エントリーシートの長所も指摘し、それをさらに強化する方法があれば提案してください。
+最後に、添削後の文章を400文字～450文字の一つの段落にまとめて提示してください。
+
+エントリーシート：
+
+${entrySheetText}`;
+
+        const modal = document.getElementById('aiPromptModal');
+        const promptText = document.getElementById('aiPromptText');
+        const copyBtn = document.getElementById('copyPromptBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+
+        promptText.value = aiPrompt;
+        modal.style.display = "block";
+
+        copyBtn.onclick = () => {
+            promptText.select();
+            document.execCommand('copy');
+            alert('プロンプトをクリップボードにコピーしました。');
+        };
+
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+        };
+
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+    }
+
+    function escapeHTML(str) {
+        return str.replace(/[&<>"']/g, (match) => {
+            const escape = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            };
+            return escape[match];
+        });
+    }
+});
+    </script>
+</body>
+</html>

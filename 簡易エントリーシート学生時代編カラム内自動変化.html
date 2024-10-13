@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生時代に力を入れたこと（六段論法）</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        input, textarea, select {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 1em;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 70px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .output-container {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .output-container h2 {
+            color: #333;
+        }
+        #aiPromptModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+        #aiPromptText {
+            width: 100%;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>学生時代に力を入れたこと（六段論法）</h1>
+    </header>
+    <main>
+        <form id="gakuchikaForm">
+            <label for="conclusion">1. 結論 (何を達成したか):</label>
+            <select id="conclusionSelect">
+                <option value="">-- 選択してください --</option>
+                <option value="サークルで部長を務め、部員数を2倍に増やし、活動の質を向上させました。">サークルで部長を務め、部員数を2倍に増やし、活動の質を向上させました。</option>
+                <option value="ゼミの代表として、全国学会で高評価を得る研究プロジェクトを成功させました。">ゼミの代表として、全国学会で高評価を得る研究プロジェクトを成功させました。</option>
+                <option value="アルバイトリーダーとして店舗の売上を前年比30%向上させ、顧客満足度も大幅に改善しました。">アルバイトリーダーとして店舗の売上を前年比30%向上させ、顧客満足度も大幅に改善しました。</option>
+                <option value="ボランティア団体を立ち上げ、地域の環境保護活動を通じて、1年間で1000人以上の参加者を集めました。">ボランティア団体を立ち上げ、地域の環境保護活動を通じて、1年間で1000人以上の参加者を集めました。</option>
+                <option value="留学中に現地の学生と協力し、国際交流イベントを企画・運営。5か国から200人以上の参加を実現しました。">留学中に現地の学生と協力し、国際交流イベントを企画・運営。5か国から200人以上の参加を実現しました。</option>
+            </select>
+            <textarea id="conclusion" placeholder="例: サークルで部長を務め、部員数を2倍に増やし、活動の質を向上させました。"></textarea>
+        
+            <label for="background">2. 背景 (どんな状況で):</label>
+            <select id="backgroundSelect"></select>
+            <textarea id="background" placeholder="例: 新入部員の参加が激減し、活動の継続が危ぶまれる中、部の存続と発展が急務となっていました。"></textarea>
+        
+            <label for="challenge">3. 課題 (直面した問題):</label>
+            <select id="challengeSelect"></select>
+            <textarea id="challenge" placeholder="例: 部員間の意識の差が大きく、活動への参加率が低下。また、新入部員の勧誘方法が時代に合わなくなっていました。"></textarea>
+        
+            <label for="action">4. 行動 (どのように対処したか):</label>
+            <select id="actionSelect"></select>
+            <textarea id="action" placeholder="例: 部員の意見を取り入れた新しい活動計画を策定し、SNSを活用した斬新な勧誘活動を展開。また、定期的な交流イベントを企画・実施しました。"></textarea>
+        
+            <label for="result">5. 結果 (得られた成果):</label>
+            <select id="resultSelect"></select>
+            <textarea id="result" placeholder="例: 1年間で部員数が2倍に増加し、学内コンテストで優勝するなど、活動の質も大幅に向上しました。部の知名度も上がり、大学からの支援も拡大しました。"></textarea>
+        
+            <label for="learning">6. 学び (学んだこと):</label>
+            <select id="learningSelect"></select>
+            <textarea id="learning" placeholder="例: リーダーシップとは、メンバーの多様な意見を尊重し、全員の力を最大限に引き出すことだと学びました。また、変化を恐れず、新しいアプローチを積極的に取り入れることの重要性を実感しました。"></textarea>
+        
+        </form>
+
+        <button type="button" id="generateBtn">テキストを作成</button>
+    </main>
+
+    <div id="output" class="output-container"></div>
+    <div id="aiPromptModal" class="modal">
+        <div class="modal-content">
+            <h2>AIに添削依頼するプロンプト</h2>
+            <textarea id="aiPromptText"></textarea>
+            <button id="copyPromptBtn">プロンプトをコピー</button>
+            <button id="closeModalBtn">閉じる</button>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('gakuchikaForm');
+        const output = document.getElementById('output');
+        const generateBtn = document.getElementById('generateBtn');
+
+        const options = {
+            conclusion: [
+                "サークルで部長を務め、部員数を2倍に増やし、活動の質を向上させました。",
+                "ゼミの代表として、全国学会で高評価を得る研究プロジェクトを成功させました。",
+                "アルバイトリーダーとして店舗の売上を前年比30%向上させ、顧客満足度も大幅に改善しました。",
+                "ボランティア団体を立ち上げ、地域の環境保護活動を通じて、1年間で1000人以上の参加者を集めました。",
+                "留学中に現地の学生と協力し、国際交流イベントを企画・運営。5か国から200人以上の参加を実現しました。"
+            ],
+            background: [
+                "新入部員の参加が激減し、活動の継続が危ぶまれる中、部の存続と発展が急務となっていました。",
+                "競争の激しい研究分野で、革新的なアプローチが求められる中、限られた時間と資源で成果を出す必要がありました。",
+                "経済不況下で競合店の進出により、売上が急落し、店舗の存続が危ぶまれる状況でした。",
+                "地域の環境問題に対する関心が低く、具体的な行動を起こす人が少ない状況でした。",
+                "留学先で言語や文化の壁があり、現地学生との交流が限られていました。"
+            ],
+            challenge: [
+                "部員間の意識の差が大きく、活動への参加率が低下。また、新入部員の勧誘方法が時代に合わなくなっていました。",
+                "チーム内でのコミュニケーション不足により、研究の進捗が遅れ、独創的なアイデアの創出が停滞していました。",
+                "従業員のモチベーション低下と、顧客ニーズの変化への対応遅れにより、サービス品質が著しく低下していました。",
+                "環境問題の重要性を伝え、実際の行動に移してもらうための効果的な方法が見つからず、活動の拡大に苦戦していました。",
+                "言語の壁や文化の違いにより、現地学生との深い交流が難しく、meaningful な国際交流イベントの企画に苦労していました。"
+            ],
+            action: [
+                "部員の意見を取り入れた新しい活動計画を策定し、SNSを活用した斬新な勧誘活動を展開。また、定期的な交流イベントを企画・実施しました。",
+                "週次のブレインストーミングセッションを導入し、クラウド上で共同作業環境を構築。外部専門家との連携も強化しました。",
+                "従業員の意見を積極的に取り入れ、新たな接客マニュアルを作成。顧客アンケートを基に商品・サービスを刷新し、店舗のリブランディングを行いました。",
+                "SNSを活用した情報発信と、地域イベントでのブース出展を積極的に行い、活動の可視化に努めました。また、地元企業や学校と連携し、参加しやすい小規模な清掃活動を定期的に開催しました。",
+                "現地学生との共同企画チームを結成し、定期的なミーティングを通じて互いの文化を学び合う機会を設けました。また、SNSを活用して幅広く参加者を募り、多様な文化体験ワークショップを企画しました。"
+            ],
+            result: [
+                "1年間で部員数が2倍に増加し、学内コンテストで優勝するなど、活動の質も大幅に向上しました。部の知名度も上がり、大学からの支援も拡大しました。",
+                "期限内に革新的な研究成果を達成し、全国学会で最優秀賞を受賞。さらに、研究成果が国際ジャーナルに掲載されるなど、学術的にも高い評価を得ました。",
+                "6ヶ月で売上が前年同期比30%増加し、顧客満足度調査でも地域1位を獲得。従業員の離職率も大幅に改善し、活気ある職場環境を実現しました。",
+                "1年間で延べ1000人以上が活動に参加し、地域の環境意識が大きく向上。市から表彰を受け、活動資金の助成も獲得しました。地元メディアにも取り上げられ、活動の認知度が飛躍的に高まりました。",
+                "5か国から200人以上が参加する大規模な国際交流イベントを成功させ、大学や地域コミュニティから高い評価を得ました。参加者アンケートでは満足度98%を達成し、継続的な交流のきっかけを作ることができました。"
+            ],
+            learning: [
+                "リーダーシップとは、メンバーの多様な意見を尊重し、全員の力を最大限に引き出すことだと学びました。また、変化を恐れず、新しいアプローチを積極的に取り入れることの重要性を実感しました。",
+                "革新的な成果を生み出すには、多様な視点を融合させ、オープンなコミュニケーション環境を作ることが不可欠だと学びました。また、困難に直面しても諦めず、粘り強く取り組む姿勢の大切さを身につけました。",
+                "ビジネスの成功には、顧客のニーズを深く理解し、迅速に対応する柔軟性が重要だと学びました。同時に、従業員の満足度向上が、サービス品質と顧客満足度の向上に直結することを実感しました。",
+                "社会課題の解決には、問題の可視化と継続的な取り組みが重要だと学びました。また、多様な関係者を巻き込み、小さな成功を積み重ねることで、大きな変化を生み出せることを実感しました。",
+                "真の国際交流には、言語の壁を超えて相互理解を深めることが重要だと学びました。また、多様性を尊重し、それぞれの文化の良さを生かすことで、創造的なアイデアが生まれることを実感しました。"
+            ]
+        };
+
+        // Populate dropdowns
+        Object.keys(options).forEach((key, index) => {
+            const select = document.getElementById(`${key}Select`);
+            select.innerHTML = '<option value="">-- 選択してください --</option>';
+            options[key].forEach((option, i) => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option.substring(0, 50) + '...';
+                select.appendChild(optionElement);
+            });
+        });
+
+        // Function to update all fields based on the selected conclusion
+        function updateAllFields(selectedIndex) {
+            Object.keys(options).forEach((key, index) => {
+                const select = document.getElementById(`${key}Select`);
+                const textarea = document.getElementById(key);
+                if (selectedIndex !== -1) {
+                    select.selectedIndex = selectedIndex + 1;
+                    textarea.value = options[key][selectedIndex];
+                } else {
+                    select.selectedIndex = 0;
+                    textarea.value = '';
+                }
+            });
+        }
+
+        // Add event listener to conclusion dropdown
+        const conclusionSelect = document.getElementById('conclusionSelect');
+        conclusionSelect.addEventListener('change', (e) => {
+            const selectedIndex = conclusionSelect.selectedIndex - 1;
+            updateAllFields(selectedIndex);
+        });
+
+        
+
+        generateBtn.addEventListener('click', generateEntrySheet);
+
+        function generateEntrySheet() {
+            const fields = ['conclusion', 'background', 'challenge', 'action', 'result', 'learning'];
+            const entrySheet = fields.reduce((acc, field) => {
+                const value = document.getElementById(field).value;
+                return acc + `【${field}】\n${value}\n\n`;
+            }, '');
+
+            output.innerHTML = `
+                <h2>作成されたエントリシート</h2>
+                <pre>${escapeHTML(entrySheet)}</pre>
+                <button id="downloadBtn">ダウンロード</button>
+                <button id="aiPromptBtn">AIに添削依頼するプロンプトを作成</button>
+            `;
+
+            document.getElementById('downloadBtn').addEventListener('click', () => downloadText(entrySheet));
+            document.getElementById('aiPromptBtn').addEventListener('click', () => generateAIReviewPrompt(entrySheet));
+        }
+
+        function downloadText(text) {
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'entry_sheet.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function generateAIReviewPrompt(entrySheetText) {
+            const aiPrompt = `以下は、学生時代に力を入れたことについて書かれたエントリーシートです。このエントリーシートを以下の観点から添削し、改善案を提示してください：
+内容の一貫性：文章全体が論理的につながっているか
+具体性：経験や成果が具体的な事例や数字を用いて説明されているか
+成長の証明：学生時代の経験を通じてどのように成長したかが明確に示されているか
+文章の簡潔さ：冗長な表現や不必要な情報がないか
+印象の強さ：読み手に強い印象を与える内容になっているか
+改善案を提示する際は、具体的な修正例を含めてください。また、エントリーシートの長所も指摘し、それをさらに強化する方法があれば提案してください。
+最後に、添削後の文章を350文字～400文字の一つの段落にまとめて提示してください。
+
+エントリーシート：
+
+${entrySheetText}`;
+
+            const modal = document.getElementById('aiPromptModal');
+            const promptText = document.getElementById('aiPromptText');
+            const copyBtn = document.getElementById('copyPromptBtn');
+            const closeBtn = document.getElementById('closeModalBtn');
+
+            promptText.value = aiPrompt;
+            modal.style.display = "block";
+
+            copyBtn.onclick = () => {
+                promptText.select();
+                document.execCommand('copy');
+                alert('プロンプトをクリップボードにコピーしました。');
+            };
+
+            closeBtn.onclick = () => {
+                modal.style.display = "none";
+            };
+
+            window.onclick = (event) => {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            };
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>"']/g, (match) => {
+                const escape = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                };
+                return escape[match];
+            });
+        }
+    });
+    </script>
+</body>
+</html>
