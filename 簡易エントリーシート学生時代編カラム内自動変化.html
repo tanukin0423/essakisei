@@ -182,6 +182,9 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const form = document.getElementById('gakuchikaForm');
+        form.addEventListener('submit', function(e) {
+    e.preventDefault();
+});
         const output = document.getElementById('output');
         const generateBtn = document.getElementById('generateBtn');
 
@@ -257,18 +260,25 @@
             });
         }
 
-        // Add event listener to conclusion dropdown
-        const conclusionSelect = document.getElementById('conclusionSelect');
-        conclusionSelect.addEventListener('change', (e) => {
-            const selectedIndex = conclusionSelect.selectedIndex - 1;
-            updateAllFields(selectedIndex);
-        });
-
+        // Add event listeners to conclusion dropdown
+const conclusionSelect = document.getElementById('conclusionSelect');
+['change', 'input'].forEach(event => {
+    conclusionSelect.addEventListener(event, (e) => {
+        const selectedIndex = conclusionSelect.selectedIndex - 1;
+        updateAllFields(selectedIndex);
+    });
+});
         
 
         generateBtn.addEventListener('click', generateEntrySheet);
+        generateBtn.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    generateEntrySheet();
+});
 
         function generateEntrySheet() {
+            // スクロール位置を調整
+    window.scrollTo(0, document.body.scrollHeight);
             const fields = ['conclusion', 'background', 'challenge', 'action', 'result', 'learning'];
             const entrySheet = fields.reduce((acc, field) => {
                 const value = document.getElementById(field).value;
